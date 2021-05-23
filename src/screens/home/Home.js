@@ -130,3 +130,40 @@ class Home extends Component {
         xhrRestaurants.setRequestHeader("Accept", "application/json");
         xhrRestaurants.send(restaurantsData);
     }
+
+    //method updates the no columns according to the window size
+    noOfColumns = () => {
+
+        if (window.innerWidth >= 320 && window.innerWidth <= 600) {
+            this.setState({
+                cards: 1,
+            });
+            return;
+        }
+
+        if (window.innerWidth >= 601 && window.innerWidth <= 1000) {
+            this.setState({
+                cards: 2,
+            });
+            return;
+        }
+
+        if (window.innerWidth >= 1001 && window.innerWidth <= 1270) {
+            this.setState({
+                cards: 3,
+            });
+            return;
+        }
+
+        if (window.innerWidth >= 1271 && window.innerWidth <= 1530) {
+            this.setState({
+                cards: 4,
+            });
+            return;
+        }
+        if (window.innerWidth >= 1530) {
+            this.setState({ cards: 5 });
+            return;
+        }
+    }
+
