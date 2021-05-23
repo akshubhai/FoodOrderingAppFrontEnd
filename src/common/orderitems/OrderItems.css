@@ -49,13 +49,17 @@
 
 .amount {
   width: 247px;
+  justify-content: space-between;
+  display: flex;
 }
 
 .payable-bill-amount {
   display: flex;
   flex-direction: row;
-  width: 76px;
+  width: 56px;
   margin-bottom: 20px;
+  margin-right: 37px;
+  text-align: left;
 }
 
 .amount-value {

@@ -44,7 +44,7 @@ export default function OrderItems(props) {
       {props.divider ? <Divider /> : null}
       <div className="amount-section">
         <div className="amount">
-          <Typography variant="h6" color="textPrimary">
+          <Typography variant="h6" color="textPrimary" >
             Net Amount
           </Typography>
         </div>
@@ -53,7 +53,7 @@ export default function OrderItems(props) {
             <i className="fa fa-inr" aria-hidden="true"></i>
           </Typography>
           <Typography
-            style={{ marginRight: 10 }}
+            style={{ marginRight: 20 }}
             variant="h6"
             color="textSecondary"
           >
