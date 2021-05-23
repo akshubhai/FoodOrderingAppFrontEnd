@@ -3,7 +3,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
-export default function CustomizedSnackBar(props) {
+export default function SnackBar(props) {
   return (
     <Snackbar
       anchorOrigin={{

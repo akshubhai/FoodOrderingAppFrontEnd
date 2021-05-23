@@ -4,7 +4,7 @@ import React, { Component, Fragment } from "react";
 import "./Details.css";
 
 //Other components import
-import CustomizedSnackbar from "../../common/customizedsnackbar/CustomizedSnackBar";
+import Snackbar from "../../common/snackbar/SnackBar";
 import Header from "../../common/header/Header";
 
 //Material UI component imports
@@ -555,32 +555,32 @@ class Details extends Component {
               </Card>
             </div>
           </div>
-          <CustomizedSnackbar
+          <Snackbar
             open={this.state.open}
             closeHandler={this.closeHandler}
             message="Item added to cart!"
           />
-          <CustomizedSnackbar
+          <Snackbar
             open={this.state.cartEmpty}
             closeHandler={this.closeHandler}
             message="Please add an item to your cart!"
           />
-          <CustomizedSnackbar
+          <Snackbar
             open={this.state.itemQuantityDecreased}
             closeHandler={this.closeHandler}
             message="Item quantity decreased by 1!"
           />
-          <CustomizedSnackbar
+          <Snackbar
             open={this.state.nonloggedIn}
             closeHandler={this.closeHandler}
             message="Please login first!"
           />
-          <CustomizedSnackbar
+          <Snackbar
             open={this.state.itemRemovedFromCart}
             closeHandler={this.closeHandler}
             message="Item removed from cart!"
           />
-          <CustomizedSnackbar
+          <Snackbar
             open={this.state.itemQuantityIncreased}
             closeHandler={this.closeHandler}
             message="Item quantity increased by 1!"
