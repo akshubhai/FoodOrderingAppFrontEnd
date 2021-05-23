@@ -2,11 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+import Controller from "./screens/Controller";
+import 'typeface-roboto';
+import {BrowserRouter as Router} from "react-router-dom";
 
 ReactDOM.render(
-    <div>
-        Food Ordering App
-    </div>,
+    <Router>
+        <Controller />
+    </Router>,
     document.getElementById('root')
 );
 
