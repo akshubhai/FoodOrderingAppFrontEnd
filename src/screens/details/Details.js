@@ -90,4 +90,55 @@ class Details extends Component {
         return -1; //to handle the case where the value doesn't exist
     }
 
+     /**
+     * This function is called when you add an item to the cart.
+     * @param e - event
+     * @param id - item id
+     * @param type - type (VEG or NON_VEG)
+     * @param name - item name
+     * @param price - price
+     */
+      addToCartHandler = (e, id, type, name, price) => {
+        var totalAmount = this.state.totalAmount;
+        var totalItems = this.state.totalItems;
+        totalItems += 1;
+
+        const newItem = this.state.cartItem;
+        newItem.id = id;
+        newItem.type = type;
+        newItem.name = name;
+        newItem.pricePerItem = price;
+        newItem.quantity = 1;
+        newItem.priceForAll = price;
+
+        this.setState({cartItem: newItem});
+
+        totalAmount += price;
+
+        if (this.state.orderItems.items !== undefined && this.state.orderItems.items.some(item => (item.name === name))) {
+            var index = this.getIndex(name, this.state.orderItems.items, "name");
+            var quantity = this.state.orderItems.items[index].quantity + 1;
+            var priceForAll = this.state.orderItems.items[index].priceForAll + this.state.orderItems.items[index].pricePerItem;
+            var item = this.state.orderItems.items[index];
+            item.quantity = quantity;
+            item.priceForAll = priceForAll;
+            this.setState(item);
+
+        } else {
+
+            this.state.cartItems.push(this.state.cartItem);
+            this.setState({cartItem: {}});
+
+
+            const orderItems = this.state.orderItems;
+            orderItems.items = this.state.cartItems;
+            this.setState({orderItems: orderItems});
+        }
+
+        this.setState({open: true});
+        this.setState({totalItems: totalItems});
+        this.setState({totalAmount: totalAmount});
+
+    }
+
     
