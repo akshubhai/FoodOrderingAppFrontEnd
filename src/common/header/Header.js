@@ -631,7 +631,7 @@ class Header extends Component {
         xhrSignup.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
                 let responseText = JSON.parse(this.responseText);
-                // displays the signup error message
+                //signup error message is displayed
                 if (this.status === 400) {
                     that.setState({
                         signupErrorMessage: responseText.message,
@@ -655,7 +655,7 @@ class Header extends Component {
         xhrSignup.send(signupData);
     }
 
-    // called when customer clicks on profile icon
+    // profile icon displayed when customer clicks on profile
     onProfileIconClick = (e) => {
         this.setState({'menuState': !this.state.menuState, 'anchorEl': e.currentTarget});
     }
