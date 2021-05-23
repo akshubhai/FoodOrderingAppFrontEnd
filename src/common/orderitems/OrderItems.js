@@ -45,7 +45,7 @@ export default function OrderItems(props) {
       <div className="amount-section">
         <div className="amount">
           <Typography variant="h6" color="textPrimary">
-            Net Ammount
+            Net Amount
           </Typography>
         </div>
         <div className="payable-bill-amount">
