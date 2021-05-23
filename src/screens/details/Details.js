@@ -210,4 +210,23 @@ class Details extends Component {
         this.setState({ itemQuantityIncreased: false })
     }
 
+     /**
+     * This funciton is called when checkout button is clicked.
+     */
+      checkoutHandler = () => {
+        if (this.state.totalItems === 0) {
+            this.setState({cartEmpty: true});
+        } else if (this.state.totalItems > 0 && sessionStorage.getItem('access-token') === null) {
+            this.setState({nonloggedIn: true});
+        } else {
+            this.props.history.push({
+                pathname: '/checkout/',
+                state: {
+                    orderItems: this.state.orderItems,
+                    total: this.state.totalAmount, restaurantName: this.state.restaurant_name
+                }
+            })
+        }
+    }
+
     
