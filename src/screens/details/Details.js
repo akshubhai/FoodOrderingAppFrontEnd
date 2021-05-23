@@ -141,4 +141,73 @@ class Details extends Component {
 
     }
 
+    /**
+     * This function is called when an item is removed from the cart.
+     * @param e - event
+     * @param id - item id
+     * @param type - type (VEG or NON_VEG)
+     * @param name - item name
+     * @param price - price
+     */
+     removeFromCartHandler = (e, id, type, name, price) => {
+
+        var index = this.getIndex(name, this.state.orderItems.items, "name");
+
+        if (this.state.orderItems.items[index].quantity > 1) {
+            var quantity = this.state.orderItems.items[index].quantity - 1;
+            var priceForAll = this.state.orderItems.items[index].priceForAll - this.state.orderItems.items[index].pricePerItem;
+            var item = this.state.orderItems.items[index];
+            item.quantity = quantity;
+            item.priceForAll = priceForAll;
+            this.setState(item);
+            this.setState({itemQuantityDecreased: true});
+
+        } else {
+
+            this.state.orderItems.items.splice(index, 1);
+            this.setState({itemRemovedFromCart: true});
+
+        }
+
+
+        var totalAmount = this.state.totalAmount;
+        totalAmount -= price;
+        var totalItems = this.state.totalItems;
+        totalItems -= 1;
+
+        this.setState({totalItems: totalItems});
+        this.setState({totalAmount: totalAmount});
+
+    }
+
+
+    addAnItemFromCartHandler = (item, index) => {
+        const itemIndex = this.getIndex(item.name, this.state.orderItems.items, "name");
+
+        var quantity = this.state.orderItems.items[itemIndex].quantity + 1;
+        var priceForAll = this.state.orderItems.items[itemIndex].priceForAll + this.state.orderItems.items[itemIndex].pricePerItem;
+        var itemAdded = this.state.orderItems.items[itemIndex];
+        itemAdded.quantity = quantity;
+        itemAdded.priceForAll = priceForAll;
+        this.setState(item);
+        this.setState({ itemQuantityIncreased: true });
+        var totalAmount = this.state.totalAmount;
+        totalAmount += item.pricePerItem;
+        var totalItems = this.state.totalItems;
+        totalItems += 1;
+
+        this.setState({ totalItems: totalItems });
+        this.setState({ totalAmount: totalAmount });
+    }
+
+    closeHandler = () => {
+        this.setState({ open: false })
+        this.setState({ cartEmpty: false })
+        this.setState({ nonloggedIn: false })
+        this.setState({ itemQuantityDecreased: false })
+        this.setState({ itemRemovedFromCart: false })
+        this.setState({ itemAddedFromCart: false })
+        this.setState({ itemQuantityIncreased: false })
+    }
+
     
