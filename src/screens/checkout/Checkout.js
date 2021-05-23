@@ -296,3 +296,296 @@ class Checkout extends Component {
     resetActiveStep = () => {
         this.setState({activeStep: 0, displayChange: 'display-none'})
     }
+
+    changeActiveTab = (value) => {
+        this.setState({activeTabValue: value})
+        if (value === 'existing_address') {
+            this.fetchAddress();
+        }
+    }
+
+
+       /**
+     * Used when a user clicks on one address tile to select the address.
+     */
+        selectAddress = (e) => {
+            let elementId = e.target.id;
+            if (elementId.startsWith('select-address-icon-')) {
+                this.setState({selectedAddressId: elementId.split('select-address-icon-')[1]});
+            }
+            if (elementId.startsWith('select-address-button-')) {
+                this.setState({selectedAddressId: elementId.split('select-address-button-')[1]})
+            }
+        }
+    
+        /**
+         * Common for all the input changes of the new address form.
+         */
+        onInputFieldChangeHandler = (e) => {
+            let stateKey = e.target.id;
+            let stateValue = e.target.value;
+            //Material UI Select doesn't return key
+            if (stateKey === undefined) {
+                stateKey = 'stateUUID';
+            }
+            //Form validation.
+            let stateValueRequiredKey = stateKey + 'Required';
+            let stateKeyRequiredValue = false;
+            if (stateValue === '') {
+                stateKeyRequiredValue = true;
+            }
+            let validPincode = this.state.pincodeValid;
+            if (stateKey === 'pincode') {
+                validPincode = this.validatePincode(stateValue);
+            }
+            this.setState({
+                [stateKey]: stateValue,
+                [stateValueRequiredKey]: stateKeyRequiredValue,
+                'pincodeValid': validPincode
+            });
+        }
+    
+        /**
+         * Used to validate the pincode.
+         */
+        validatePincode = (pincode) => {
+            if (pincode !== undefined && pincode.length !== 6) {
+                return false;
+            } else if (!isNaN(pincode) && pincode.length === 6) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    
+        /**
+         * Used in step 2 of the stepper when a user selects the payment mode.
+         */
+        onPaymentSelection = (e) => {
+            this.setState({'paymentId': e.target.value});
+        }
+    
+        /**
+         * Closes the snackbar that displays order success or failure message.
+         */
+        placeOrderMessageClose = () => {
+            this.setState({placeOrderMessageOpen: false});
+        }
+    
+        /**
+         * Connects to the API server to fetch the addresses.
+         */
+        fetchAddress = () => {
+            let token = sessionStorage.getItem('access-token');
+    
+            let xhr = new XMLHttpRequest();
+    
+            let that = this;
+    
+            xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === 4) {
+                    that.setState({addresses: JSON.parse(this.responseText).addresses});
+                }
+            });
+    
+            let url = this.props.baseUrl + 'address/customer';
+    
+            xhr.open('GET', url);
+    
+            xhr.setRequestHeader('authorization', 'Bearer ' + token);
+            xhr.setRequestHeader("Cache-Control", "no-cache");
+    
+            xhr.send();
+        }
+    
+        /**
+         * Connects to the API server to fetch the states.
+         */
+        fetchStates = () => {
+    
+            let xhr = new XMLHttpRequest();
+    
+            let that = this;
+    
+            xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === 4) {
+                    that.setState({states: JSON.parse(this.responseText).states});
+                }
+            });
+    
+            let url = this.props.baseUrl + 'states/';
+    
+            xhr.open('GET', url);
+    
+            xhr.setRequestHeader("Cache-Control", "no-cache");
+    
+            xhr.send();
+        }
+
+   /**
+     * Connects to the API server to fetch the payments.
+     */
+    fetchPayments = () => {
+
+        let xhr = new XMLHttpRequest();
+
+        let that = this;
+
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                that.setState({payments: JSON.parse(this.responseText).paymentMethods});
+            }
+        });
+
+        let url = this.props.baseUrl + 'payment';
+
+        xhr.open('GET', url);
+
+        xhr.setRequestHeader("Cache-Control", "no-cache");
+
+        xhr.send();
+    }
+
+    /**
+     * Connects to the API server to save the address.
+     */
+    saveAddress = () => {
+        let tempCityRequired = false;
+        let tempPincodeRequired = false;
+        let tempFlatRequired = false;
+        let tempStateRequired = false;
+        let tempLocalityRequired = false;
+        if (this.state.city === '' || this.state.cityRequired) {
+            tempCityRequired = true;
+        }
+
+        if (this.state.locality === '' || this.state.localityRequired) {
+            tempLocalityRequired = true;
+        }
+
+        if (this.state.flat === '' || this.state.flatRequired) {
+            tempFlatRequired = true;
+        }
+
+        if (this.state.stateUUID === '' || this.state.stateUUIDRequired) {
+            tempStateRequired = true;
+        }
+
+        if (this.state.pincode === '' || this.state.pincodeRequired) {
+            tempPincodeRequired = true;
+        }
+
+        if (tempFlatRequired || tempPincodeRequired || tempStateRequired || tempLocalityRequired || tempCityRequired) {
+            this.setState({
+                flatRequired: tempFlatRequired,
+                localityRequired: tempLocalityRequired,
+                cityRequired: tempCityRequired,
+                stateUUIDRequired: tempStateRequired,
+                pincodeRequired: tempPincodeRequired
+            })
+            return;
+        }
+
+        let address = {
+            city: this.state.city,
+            flat_building_name: this.state.flat,
+            locality: this.state.locality,
+            pincode: this.state.pincode,
+            state_uuid: this.state.stateUUID
+        }
+
+        let token = sessionStorage.getItem('access-token');
+
+        let xhr = new XMLHttpRequest();
+
+        let that = this;
+
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                that.setState({
+                    addresses: JSON.parse(this.responseText).addresses,
+                    city: '',
+                    locality: '',
+                    flat: '',
+                    stateUUID: '',
+                    pincode: ''
+                });
+            }
+        });
+
+        let url = this.props.baseUrl + 'address/';
+
+        xhr.open('POST', url);
+
+        xhr.setRequestHeader('authorization', 'Bearer ' + token);
+        xhr.setRequestHeader("Cache-Control", "no-cache");
+        xhr.setRequestHeader('content-type', 'application/json');
+
+        xhr.send(JSON.stringify(address));
+    }
+
+
+/**
+     * This function connects to the API server to place the order.
+     */
+ placeOrder = () => {
+    if (this.state.selectedAddressId === '' || this.state.selectedAddressId === undefined || this.state.paymentId === '' || this.state.paymentId === undefined || this.state.displayChange === 'display-none') {
+        this.setState({
+            placeOrderMessage: 'Unable to place your order! Please try again!',
+            placeOrderMessageOpen: true
+        })
+        return;
+    }
+    let bill = this.props.location.state.total;
+    let itemQuantities = [];
+    this.props.location.state.orderItems.items.map((item, index) => (
+        itemQuantities.push({item_id: item.id, price: item.quantity * item.pricePerItem, quantity: item.quantity})
+    ))
+    let order = {
+        address_id: this.state.selectedAddressId,
+        coupon_id: this.state.couponId,
+        item_quantities: itemQuantities,
+        payment_id: this.state.paymentId,
+        restaurant_id: this.props.location.state.orderItems.id,
+        bill: bill,
+        discount: 0
+    }
+
+    let token = sessionStorage.getItem('access-token');
+
+    let xhr = new XMLHttpRequest();
+
+    let that = this;
+
+    xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                if (this.status === 201) {
+                    let orderId = JSON.parse(this.responseText).id;
+                    that.setState({
+                        placeOrderMessage: 'Order placed successfully! Your order ID is ' + orderId,
+                        placeOrderMessageOpen: true
+                    });
+                } else {
+                    that.setState({
+                        placeOrderMessage: 'Unable to place your order! Please try again!',
+                        placeOrderMessageOpen: true
+                    });
+                    console.clear();
+                }
+            }
+        }
+    );
+
+    let url = this.props.baseUrl + 'order';
+
+    xhr.open('POST', url);
+
+    xhr.setRequestHeader('authorization', 'Bearer ' + token);
+    xhr.setRequestHeader("Cache-Control", "no-cache");
+    xhr.setRequestHeader('content-type', 'application/json');
+
+    xhr.send(JSON.stringify(order));
+}
+}
+
+export default Checkout;
