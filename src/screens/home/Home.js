@@ -111,4 +111,22 @@ class Home extends Component {
         )
     }
 
-    
+    //fetches the restaurants from backend
+    getRestaurants = () => {
+        let that = this;
+        let restaurantsData = null;
+        let xhrRestaurants = new XMLHttpRequest();
+        xhrRestaurants.onload = this.setState({ loading: true })
+        xhrRestaurants.addEventListener('readystatechange', function () {
+            if (this.readyState === 4) {
+                console.log(this.responseText)
+                that.setState({
+                    restaurants: JSON.parse(this.responseText).restaurants,
+                    loading: false
+                });
+            }
+        })
+        xhrRestaurants.open("GET", this.props.baseUrl + 'restaurant');
+        xhrRestaurants.setRequestHeader("Accept", "application/json");
+        xhrRestaurants.send(restaurantsData);
+    }
